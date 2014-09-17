@@ -54,6 +54,7 @@ import static org.jooq.SQLDialect.MYSQL;
 // ...
 import static org.jooq.SQLDialect.POSTGRES;
 import static org.jooq.SQLDialect.SQLITE;
+import static org.jooq.SQLDialect.VOLTDB;
 // ...
 // ...
 
@@ -151,6 +152,9 @@ public class JDBCUtils {
         else if (url.startsWith("jdbc:sqlite:")) {
             return SQLITE;
         }
+        else if (url.startsWith("jdbc:voltdb:")) {
+            return VOLTDB;
+        }
 
         /* [pro] xx
         xxxx xx xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x
@@ -207,6 +211,8 @@ public class JDBCUtils {
                 return "org.postgresql.Driver";
             case SQLITE:
                 return "org.sqlite.JDBC";
+            case VOLTDB:
+                return "org.voltdb.jdbc.Driver";
 
             /* [pro] xx
             xxxx xxxxxxx
