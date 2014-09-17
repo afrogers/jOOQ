@@ -117,6 +117,11 @@ public enum SQLDialect {
      */
     SQLITE("SQLite", false),
 
+    /**
+     * The VoltDB dialect family.
+     */
+    VOLTDB("VoltDB", false),
+
     // -------------------------------------------------------------------------
     // SQL dialects for commercial usage
     // -------------------------------------------------------------------------
