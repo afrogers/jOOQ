@@ -56,6 +56,17 @@ import org.jooq.util.SchemaDefinition;
 
 public class VoltDBRoutineDefinition extends AbstractRoutineDefinition {
 
+    final DataTypeDefinition returnRowType = new DefaultDataTypeDefinition(
+        getDatabase(),
+        getSchema(),
+        "RESULT",
+        null,
+        null,
+        null,
+        null,
+        null
+    );
+
     public VoltDBRoutineDefinition(SchemaDefinition schema, String name, String comment) {
         super(schema, null, name, comment, null);
     }
@@ -111,7 +122,7 @@ public class VoltDBRoutineDefinition extends AbstractRoutineDefinition {
             addParameter(InOutDefinition.IN,p);
         }
 
-//        addParameter(InOutDefinition.RETURN,
-//            new DefaultParameterDefinition(this, "RETURN_VALUE", -1, SQLDataType.RESULT));
+        addParameter(InOutDefinition.RETURN,
+            new DefaultParameterDefinition(this, "RETURN_VALUE", -1, returnRowType));
     }
 }
