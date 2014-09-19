@@ -93,6 +93,7 @@ import org.jooq.util.postgres.PostgresDatabase;
 import org.jooq.util.sqlite.SQLiteDatabase;
 // ...
 // ...
+import org.jooq.util.voltdb.VoltDBDatabase;
 
 /**
  * The GenerationTool takes care of generating Java code from a database schema.
@@ -466,6 +467,7 @@ public class GenerationTool {
             case MYSQL:     result = MySQLDatabase.class;     break;
             case POSTGRES:  result = PostgresDatabase.class;  break;
             case SQLITE:    result = SQLiteDatabase.class;    break;
+            case VOLTDB:    result = VoltDBDatabase.class;    break;
         }
 
         log.info("Database", "Inferring database " + result.getName() + " from URL " + j.getUrl());
