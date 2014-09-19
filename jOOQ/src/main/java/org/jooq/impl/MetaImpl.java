@@ -54,7 +54,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -379,7 +378,8 @@ class MetaImpl implements Meta, Serializable {
 
         private final Result<Record> getColumns0(String schema, String table) throws SQLException {
             ResultSet rs;
-            if (!asList(MYSQL, MARIADB).contains(configuration.dialect().family())) {
+            SQLDialect dialect = configuration.dialect().family();
+            if (!asList(MYSQL, MARIADB).contains(dialect)) {
                 rs = meta().getColumns(null, schema, table, "%");
             }
 
@@ -387,6 +387,7 @@ class MetaImpl implements Meta, Serializable {
             else {
                 rs = meta().getColumns(schema, null, table, "%");
             }
+
 
             return create.fetch(
                 rs,
@@ -402,7 +403,7 @@ class MetaImpl implements Meta, Serializable {
                 int.class,    // DATA_TYPE
                 String.class, // TYPE_NAME
                 int.class,    // COLUMN_SIZE
-                String.class, // BUFFER_LENGTH
+                (dialect == SQLDialect.VOLTDB ? Integer.class : String.class), // BUFFER_LENGTH
                 int.class     // DECIMAL_DIGITS
             );
         }
