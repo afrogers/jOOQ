@@ -56,23 +56,28 @@ import org.jooq.util.SchemaDefinition;
 
 public class VoltDBRoutineDefinition extends AbstractRoutineDefinition {
 
-    final DataTypeDefinition returnRowType = new DefaultDataTypeDefinition(
-        getDatabase(),
-        getSchema(),
-        "RESULT",
-        null,
-        null,
-        null,
-        null,
-        null
-    );
-
     public VoltDBRoutineDefinition(SchemaDefinition schema, String name, String comment) {
         super(schema, null, name, comment, null);
     }
 
+    static final String parameterNames [] =  {
+        "FIRST","SECOND","THIRD","FOURTH","FIFTH","SIXTH","SEVENTH","EIGHTH","NINTH",
+        "TENTH","ELEVENTH","TWELVETH","THIRTEENTH","FOURTEENTH","FIFTEENTH","SIXTEENTH"
+    };
+
     @Override
     protected void init0() throws SQLException {
+        final DataTypeDefinition returnRowType = new DefaultDataTypeDefinition(
+            getDatabase(),
+            getSchema(),
+            "RESULT",
+            null,
+            null,
+            null,
+            null,
+            null
+            );
+
         DatabaseMetaData dbmd = getConnection().getMetaData();
 
         Result<Record> parameters = create().fetch(
@@ -112,10 +117,20 @@ public class VoltDBRoutineDefinition extends AbstractRoutineDefinition {
                 null
             );
 
+            final int ordinalPosition = parameter.getValue(17, int.class);
+            final String paramName ;
+            if (ordinalPosition <= parameterNames.length && ordinalPosition > 0) {
+                paramName = parameterNames[ordinalPosition-1];
+            } else if (ordinalPosition > 0) {
+                paramName = String.format("param%2d", ordinalPosition);;
+            } else {
+                paramName = parameter.getValue(3, String.class);
+            }
+
             ParameterDefinition p = new DefaultParameterDefinition(
                 this,
-                parameter.getValue(3, String.class),
-                parameter.getValue(17, int.class),
+                paramName,
+                ordinalPosition,
                 type
             );
 

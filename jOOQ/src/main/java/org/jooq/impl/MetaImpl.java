@@ -325,8 +325,9 @@ class MetaImpl implements Meta, Serializable {
 //                  String catalog = table.getValue(0, String.class);
                     String schema = table.getValue(1, String.class);
                     String name = table.getValue(2, String.class);
+                    String type = table.getValue(3, String.class);
 
-                    result.add(new MetaTable(name, this, getColumns(schema, name)));
+                    result.add(new MetaTable(name, type, this, getColumns(schema, name)));
 
 //                  TODO: Find a more efficient way to do this
 //                  Result<Record> pkColumns = executor.fetch(meta().getPrimaryKeys(catalog, schema, name))
@@ -416,9 +417,11 @@ class MetaImpl implements Meta, Serializable {
          */
         private static final long serialVersionUID = 4843841667753000233L;
 
-        MetaTable(String name, Schema schema, Result<Record> columns) {
-            super(name, schema);
+        private final String type;
 
+        MetaTable(String name, String type, Schema schema, Result<Record> columns) {
+            super(name, schema);
+            this.type = type;
             // Possible scenarios for columns being null:
             // - The "table" is in fact a SYNONYM
             if (columns != null) {
@@ -523,6 +526,8 @@ class MetaImpl implements Meta, Serializable {
         @SuppressWarnings("unchecked")
         private final UniqueKey<Record> createPrimaryKey(Result<Record> result, int columnName) {
             if (result.size() > 0) {
+                SQLDialect family = configuration.dialect().family();
+
                 TableField<Record, ?>[] fields = new TableField[result.size()];
                 for (int i = 0; i < fields.length; i++) {
                     fields[i] = (TableField<Record, ?>) field(result.get(i).getValue(columnName, String.class));
